@@ -6,7 +6,7 @@
 #
 
 # Override host metadata to make builds more reproducible and avoid leaking info
-export BUILD_USERNAME=itsvixano
+export BUILD_USERNAME=Kevin
 export BUILD_HOSTNAME=android-build
 
 # Disable ART debugging
@@ -17,7 +17,7 @@ export WITH_DEXPREOPT_DEBUG_INFO=false
 export NINJA_HIGHMEM_NUM_JOBS=1
 
 # goofy ahh build env
-if [[ $(cat /proc/sys/kernel/hostname) == "phenix" ]]; then
+if [[ $(cat /proc/sys/kernel/hostname) == "Amper" ]]; then
     unset JAVAC
 fi
 
@@ -75,7 +75,6 @@ los_changelog() {
     # Defs
     local datetime_utc=$(cat out/target/product/"${DEVICE}"/system/build.prop | grep ro.build.date.utc=)
     local datetime=$(date -d @${datetime_utc#*=} +%Y%m%d)
-    local changelog_path="${VENDOR_EXTRA_PATH}"/tools/releases/LineageOS_"${DEVICE}"/lineage-"${LOS_VERSION}"
     local changelog=${changelog_path}/changelog_${datetime}.txt
 
     if [[ -z "${DEVICE}" ]]; then
@@ -119,16 +118,6 @@ upload_assets() {
         return 0
     fi
 
-    # Upload assets on github
-    mkdir -p "${VENDOR_EXTRA_PATH}"/tools/releases/assets
-    rm -rf "${VENDOR_EXTRA_PATH}"/tools/releases/assets/*
-    cd out/target/product/"${DEVICE}"/ &> /dev/null
-    for file in lineage-*.zip recovery.img recovery_vendor.img boot.img vendor.img vendor_boot.img vendor_dlkm.img obj/PACKAGING/target_files_intermediates/*/IMAGES/super_empty.img obj/PACKAGING/target_files_intermediates/*/IMAGES/vendor.img obj/PACKAGING/target_files_intermediates/*/IMAGES/vendor_boot.img obj/PACKAGING/target_files_intermediates/*/IMAGES/vendor_dlkm.img dtbo.img; do
-        cp ${file} "${VENDOR_EXTRA_PATH}"/tools/releases/assets &> /dev/null
-    done
-    cd "${VENDOR_EXTRA_PATH}"/tools/releases/
-    ./releases.py "${DEVICE}" ${secpatch} ${datetime}
-
     # Return to the root dir
     croot
 
@@ -138,7 +127,6 @@ upload_assets() {
 
         # Generate the OTA Json
         cd out/target/product/"${DEVICE}"/ &> /dev/null
-        "${VENDOR_EXTRA_PATH}"/tools/releases/los_ota_json.py ${datetime}
 
         # Return to the root dir
         croot

@@ -21,7 +21,7 @@ TARGET_BOOTANIMATION_HALF_RES := true
 # Overlays
 PRODUCT_PACKAGES += \
     FrameworksResOverlay \
-    LineageUpdaterOverlay$(PRODUCT_VERSION_MAJOR) \
+    LineageUpdaterOverlay21 \
     RippleSystemUIOverlay \
     SimpleDeviceConfigOverlay
 
